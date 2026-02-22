@@ -1,0 +1,21 @@
+# --- Systemic Zone Shield ---
+
+# Python workspace clutter
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment blueprints stay, but the actual folders go
+.conda/
+env/
+venv/
+.env/
+
+# Data & Logs (The "Value-Add" artifacts)
+*.log
+data_raw/
+data_output/
+
+# OS specific files
+.DS_Store
+Thumbs.db
