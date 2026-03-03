@@ -1,0 +1,70 @@
+# config/config.yaml
+# Central configuration for the Systemic Zone ETL pipeline.
+# Values here are defaults; sensitive keys (API secrets, tokens)
+# must be set in .env and are loaded by python-dotenv at runtime.
+
+project:
+  name: systemic_zone
+  version: "0.1.0"
+  description: "Systemic AI assistant — context engineering, data architecture, AI domains"
+
+paths:
+  output_dir: data/output          # JSON + Parquet files land here
+  raw_dir: data/raw                # optional: save raw API responses
+  log_dir: logs
+
+output:
+  format: both                     # options: json | parquet | both
+  parquet_compression: snappy      # snappy | gzip | zstd | none
+
+# ── Reddit extractor ─────────────────────────────────────────────────────────
+reddit:
+  # Credentials loaded from .env:  REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT
+  subreddits:
+    - MachineLearning
+    - artificial
+    - LanguageTechnology
+    - datascience
+    - LocalLLaMA
+  post_limit: 100                  # posts per subreddit per run
+  include_comments: false
+  comment_limit: 20                # top-level comments per post (if enabled)
+  sort: hot                        # hot | new | top | rising
+  time_filter: week                # hour | day | week | month | year | all (only for top)
+
+# ── arXiv extractor ──────────────────────────────────────────────────────────
+arxiv:
+  queries:
+    - "large language models"
+    - "context engineering"
+    - "retrieval augmented generation"
+    - "AI alignment"
+    - "data architecture"
+  max_results: 50                  # per query per run
+  sort_by: submittedDate           # submittedDate | relevance | lastUpdatedDate
+  sort_order: descending
+
+# ── YouTube extractor ────────────────────────────────────────────────────────
+youtube:
+  # Credential loaded from .env:  YOUTUBE_API_KEY
+  channel_ids: []                  # optional: specific channel IDs
+  search_queries:
+    - "large language models tutorial"
+    - "context engineering AI"
+    - "AI agents 2025"
+  max_results: 25                  # per query per run
+  fetch_transcripts: true          # uses youtube-transcript-api (no quota cost)
+  transcript_languages:
+    - en
+
+# ── CSV / file extractor ─────────────────────────────────────────────────────
+csv:
+  watch_dirs:
+    - data/input/csv               # drop CSVs here to auto-ingest
+  file_patterns:
+    - "*.csv"
+    - "*.tsv"
+  delimiter: auto                  # auto | "," | "\t" | "|"
+  encoding: utf-8
+  infer_dtypes: true
+  skip_rows: 0
